@@ -1,0 +1,12 @@
+<div class="login-clean" style="padding-top:130px;">
+    <form class="p-5" name='f' method='POST' ng-submit="submit()" style="background-color:lightgray;">
+        <h1 class="text-center" style="height:70px;">Prijavi rad</h1>
+        <div ng-repeat="property in properties.formFields">
+            <label>{{property.label}}</label>
+            <input ng-if="property.type.name=='string'" ng-model="model[property.id]" class="form-control" type="text" name="property.label" required=""  style="margin-top:0px;margin-bottom:10px;background-color:rgb(255,255,255);">
+            <input ng-if="property.type.name=='boolean'" ng-model="model[property.id]" class="form-control" type="checkbox" name="property.label" required=""  maxlength="30" minlength="4" style="background-color:rgb(255,255,255);">
+            <input ng-if="property.type.name=='long'" ng-model="model[property.id]" class="form-control" type="number" name="property.label"  maxlength="30" minlength="4" style="background-color:rgb(255,255,255);">
+        </div>
+        <input class="btn btn-primary btn-block" type="submit" value="Prijavi rad" style="background-color:darkslategray;"></input>
+    </form>
+</div>

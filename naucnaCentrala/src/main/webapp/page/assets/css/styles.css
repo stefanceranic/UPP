@@ -1,0 +1,15 @@
+#lakisrc {
+  margin:auto;
+  border:3px solid rgb(150,196,49);
+  padding:10px;
+}
+
+body {
+  overflow-x:hidden;
+}
+
+.jednakol {
+  border:2px solid rgb(150,196,49);
+  padding:10px;
+}
+

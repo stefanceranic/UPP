@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0imsjui" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="placanje" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1txaodz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1txaodz" sourceRef="StartEvent_1" targetRef="Task_0v6e9by" />
+    <bpmn:userTask id="Task_0v6e9by" name="Odabir nacina placanja" camunda:assignee="${ulogovani}">
+      <bpmn:incoming>SequenceFlow_1txaodz</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_13cid4n</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1492947</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_1yomnwk" name="Proces i evidancija uplate" camunda:expression="${paymentService.pay()}">
+      <bpmn:incoming>SequenceFlow_1492947</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1nyqfdj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1492947" sourceRef="Task_0v6e9by" targetRef="Task_1yomnwk" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1taaejg">
+      <bpmn:incoming>SequenceFlow_1nyqfdj</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0tzpqzb</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_03330ys</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1nyqfdj" sourceRef="Task_1yomnwk" targetRef="ExclusiveGateway_1taaejg" />
+    <bpmn:sequenceFlow id="SequenceFlow_0tzpqzb" name="Neuspesno izvrsena uplata" sourceRef="ExclusiveGateway_1taaejg" targetRef="Task_1jbbcxf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${uplataIzvrsena==false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_13cid4n" sourceRef="Task_1jbbcxf" targetRef="Task_0v6e9by" />
+    <bpmn:serviceTask id="Task_1jbbcxf" name="Obavestenje o neuspesnoj transakciji" camunda:expression="${emailServiceImpl.sendEmail()}">
+      <bpmn:incoming>SequenceFlow_0tzpqzb</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_13cid4n</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_03330ys" sourceRef="ExclusiveGateway_1taaejg" targetRef="Task_0tixtyp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${uplataIzvrsena==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="EndEvent_1y1cmi4" name="End">
+      <bpmn:incoming>SequenceFlow_1ma9lrk</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1ma9lrk" sourceRef="Task_0tixtyp" targetRef="EndEvent_1y1cmi4" />
+    <bpmn:serviceTask id="Task_0tixtyp" name="Obavestenje o uspesnoj transakciji" camunda:expression="${emailServiceImpl.sendEmail()}">
+      <bpmn:incoming>SequenceFlow_03330ys</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ma9lrk</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="placanje">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1txaodz_di" bpmnElement="SequenceFlow_1txaodz">
+        <di:waypoint x="209" y="120" />
+        <di:waypoint x="367" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1jm1uh5_di" bpmnElement="Task_0v6e9by">
+        <dc:Bounds x="367" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_00mq1fx_di" bpmnElement="Task_1yomnwk">
+        <dc:Bounds x="652" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1492947_di" bpmnElement="SequenceFlow_1492947">
+        <di:waypoint x="467" y="120" />
+        <di:waypoint x="652" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1taaejg_di" bpmnElement="ExclusiveGateway_1taaejg" isMarkerVisible="true">
+        <dc:Bounds x="891" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1nyqfdj_di" bpmnElement="SequenceFlow_1nyqfdj">
+        <di:waypoint x="752" y="120" />
+        <di:waypoint x="891" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0tzpqzb_di" bpmnElement="SequenceFlow_0tzpqzb">
+        <di:waypoint x="916" y="95" />
+        <di:waypoint x="916" y="0" />
+        <di:waypoint x="752" y="0" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="842" y="-27" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_13cid4n_di" bpmnElement="SequenceFlow_13cid4n">
+        <di:waypoint x="652" y="0" />
+        <di:waypoint x="417" y="0" />
+        <di:waypoint x="417" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_17a9erk_di" bpmnElement="Task_1jbbcxf">
+        <dc:Bounds x="652" y="-40" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_03330ys_di" bpmnElement="SequenceFlow_03330ys">
+        <di:waypoint x="941" y="120" />
+        <di:waypoint x="1064" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1y1cmi4_di" bpmnElement="EndEvent_1y1cmi4">
+        <dc:Bounds x="1255" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1263" y="145" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ma9lrk_di" bpmnElement="SequenceFlow_1ma9lrk">
+        <di:waypoint x="1164" y="120" />
+        <di:waypoint x="1255" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0fijx23_di" bpmnElement="Task_0tixtyp">
+        <dc:Bounds x="1064" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
